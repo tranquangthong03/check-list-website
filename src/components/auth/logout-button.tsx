@@ -7,11 +7,11 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
 export function LogoutButton() {
-  const supabase = createClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
+    const supabase = createClient();
     setLoading(true);
     await supabase.auth.signOut();
     startTransition(() => {

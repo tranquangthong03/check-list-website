@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, CalendarClock, CheckSquare, Link2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   return (
@@ -19,12 +20,13 @@ export default function Home() {
             clean dashboard.
           </p>
           <div className="flex justify-center gap-3">
-            <Button asChild className="rounded-2xl">
-              <Link href="/dashboard">
-                Go to app
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <Link
+              href="/dashboard"
+              className={cn(buttonVariants(), "rounded-2xl")}
+            >
+              Go to app
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </div>
         </section>
         <section className="grid gap-4 md:grid-cols-3">

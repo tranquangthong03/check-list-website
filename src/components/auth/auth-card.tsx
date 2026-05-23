@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,7 @@ type AuthCardProps = {
 };
 
 export function AuthCard({ mode }: AuthCardProps) {
-  const supabase = createClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const nextUrl = searchParams.get("next") ?? "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -32,6 +29,7 @@ export function AuthCard({ mode }: AuthCardProps) {
     event.preventDefault();
     setError(null);
     setLoading(true);
+    const supabase = createClient();
 
     if (!email.trim() || !password.trim() || (isRegister && !fullName.trim())) {
       setError("Please fill in all required fields.");
@@ -56,7 +54,7 @@ export function AuthCard({ mode }: AuthCardProps) {
     }
 
     startTransition(() => {
-      router.replace(nextUrl);
+      router.replace("/dashboard");
       router.refresh();
     });
   };

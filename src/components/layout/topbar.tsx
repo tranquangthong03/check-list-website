@@ -22,7 +22,7 @@ export function Topbar() {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur md:px-6">
       <Sheet>
-        <SheetTrigger asChild>
+        <SheetTrigger>
           <Button variant="outline" size="icon" className="lg:hidden">
             <Menu className="h-4 w-4" />
           </Button>

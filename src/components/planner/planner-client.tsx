@@ -105,7 +105,7 @@ export function PlannerClient() {
         <div className="flex gap-2">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger>
               <Button
                 className="rounded-2xl"
                 onClick={() => {
@@ -142,7 +142,12 @@ export function PlannerClient() {
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <Select value={form.status} onValueChange={(v: PlanStatus) => setForm({ ...form, status: v })}>
+                  <Select
+                    value={form.status}
+                    onValueChange={(v) =>
+                      setForm({ ...form, status: (v ?? "todo") as PlanStatus })
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
@@ -156,7 +161,9 @@ export function PlannerClient() {
                   </Select>
                   <Select
                     value={form.priority}
-                    onValueChange={(v: Priority) => setForm({ ...form, priority: v })}
+                    onValueChange={(v) =>
+                      setForm({ ...form, priority: (v ?? "medium") as Priority })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Priority" />
@@ -202,7 +209,12 @@ export function PlannerClient() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary">{plan.priority}</Badge>
-              <Select value={plan.status} onValueChange={(v: PlanStatus) => void updateStatus(plan.id, v)}>
+              <Select
+                value={plan.status}
+                onValueChange={(v) =>
+                  void updateStatus(plan.id, (v ?? "todo") as PlanStatus)
+                }
+              >
                 <SelectTrigger className="w-[110px]">
                   <SelectValue />
                 </SelectTrigger>

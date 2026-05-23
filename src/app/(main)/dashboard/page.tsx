@@ -42,7 +42,7 @@ export default async function DashboardPage() {
         .eq("plan_date", today),
     ]);
 
-  const { data: todayPlans } = await supabase
+  const { data: todayPlansRaw } = await supabase
     .from("daily_plans")
     .select("id,title,start_time,end_time,status,priority")
     .eq("user_id", user.id)
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
     .order("start_time", { ascending: true })
     .limit(5);
 
-  const { data: favoriteLinks } = await supabase
+  const { data: favoriteLinksRaw } = await supabase
     .from("quick_links")
     .select("id,name,url,category")
     .eq("user_id", user.id)
@@ -58,7 +58,25 @@ export default async function DashboardPage() {
     .order("sort_order", { ascending: true })
     .limit(4);
 
-  const progress = totalChecklist ? Math.round(((doneChecklist ?? 0) / totalChecklist) * 100) : 0;
+  const todayPlans = (todayPlansRaw ?? []) as {
+    id: string;
+    title: string;
+    start_time: string;
+    end_time: string;
+    status: string;
+    priority: string;
+  }[];
+
+  const favoriteLinks = (favoriteLinksRaw ?? []) as {
+    id: string;
+    name: string;
+    url: string;
+    category: string | null;
+  }[];
+
+  const progress = totalChecklist
+    ? Math.round(((doneChecklist ?? 0) / totalChecklist) * 100)
+    : 0;
 
   return (
     <div className="space-y-6">

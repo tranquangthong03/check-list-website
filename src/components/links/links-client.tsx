@@ -119,7 +119,7 @@ export function LinksClient() {
             className="w-[200px]"
           />
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger>
               <Button
                 onClick={() => {
                   setEditing(null);
@@ -186,11 +186,12 @@ export function LinksClient() {
               </Badge>
               <p className="mb-4 truncate text-sm text-muted-foreground">{item.url}</p>
               <div className="flex gap-2">
-                <Button size="sm" asChild>
-                  <a href={item.url} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-4 w-4" />
-                    Open
-                  </a>
+                <Button
+                  size="sm"
+                  onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open
                 </Button>
                 <Button
                   size="icon"

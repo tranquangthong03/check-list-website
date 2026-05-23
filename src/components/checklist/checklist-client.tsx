@@ -102,7 +102,10 @@ export function ChecklistClient() {
         <CardTitle>Checklist</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-          <Select value={statusFilter} onValueChange={(v: FilterStatus) => setStatusFilter(v)}>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter((v ?? "all") as FilterStatus)}
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue />
             </SelectTrigger>
@@ -113,7 +116,7 @@ export function ChecklistClient() {
             </SelectContent>
           </Select>
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger>
               <Button
                 onClick={() => {
                   setEditing(null);
@@ -135,7 +138,10 @@ export function ChecklistClient() {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
-                <Select value={priority} onValueChange={(v: Priority) => setPriority(v)}>
+                <Select
+                  value={priority}
+                  onValueChange={(v) => setPriority((v ?? "medium") as Priority)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

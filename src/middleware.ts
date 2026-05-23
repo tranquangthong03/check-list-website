@@ -5,17 +5,18 @@ const protectedRoutes = ["/dashboard", "/planner", "/checklist", "/links", "/set
 const authRoutes = ["/auth/login", "/auth/register"];
 
 export async function middleware(request: NextRequest) {
+  const hasAuthConfig =
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!hasAuthConfig) {
+    return NextResponse.next({ request });
+  }
+
   const { response, user } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/api")) {
-    return response;
-  }
-
-  const hasAuthConfig =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!hasAuthConfig) {
     return response;
   }
 
