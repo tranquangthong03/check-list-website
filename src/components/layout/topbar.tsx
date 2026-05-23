@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { navItems } from "@/components/layout/nav-items";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,10 @@ export function Topbar() {
         </SheetContent>
       </Sheet>
       <p className="text-sm font-medium text-muted-foreground">Personal productivity space</p>
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <LogoutButton />
+      </div>
     </header>
   );
 }

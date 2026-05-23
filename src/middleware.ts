@@ -5,7 +5,7 @@ const protectedRoutes = ["/dashboard", "/planner", "/checklist", "/links", "/set
 const authRoutes = ["/auth/login", "/auth/register"];
 
 export async function middleware(request: NextRequest) {
-  const response = await updateSession(request);
+  const { response, user } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/api")) {
@@ -19,10 +19,7 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const supabaseAccessToken = request.cookies
-    .getAll()
-    .find((cookie) => cookie.name.includes("sb-") && cookie.name.endsWith("auth-token"));
-  const isAuthenticated = Boolean(supabaseAccessToken?.value);
+  const isAuthenticated = Boolean(user);
 
   if (protectedRoutes.some((route) => pathname.startsWith(route)) && !isAuthenticated) {
     const loginUrl = new URL("/auth/login", request.url);
