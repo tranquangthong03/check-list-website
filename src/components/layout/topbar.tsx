@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
-import { LogoutButton } from "@/components/auth/logout-button";
 import { navItems } from "@/components/layout/nav-items";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
@@ -61,7 +60,6 @@ export function Topbar() {
       <p className="text-sm font-medium text-muted-foreground">Không gian quản lý công việc cá nhân</p>
       <div className="flex items-center gap-2">
         <ThemeToggle />
-        <LogoutButton />
       </div>
     </header>
   );

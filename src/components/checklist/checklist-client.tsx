@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { createClient, hasSupabaseEnv } from "@/lib/supabase/client";
 import { ChecklistItem, Priority } from "@/lib/types";
 import { getTodayDate } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
@@ -17,88 +16,69 @@ type FilterStatus = "all" | "done" | "not_done";
 const priorities: Priority[] = ["low", "medium", "high"];
 
 export function ChecklistClient() {
-  const missingEnv = !hasSupabaseEnv();
   const [date, setDate] = useState(getTodayDate());
-  const [items, setItems] = useState<ChecklistItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allItems, setAllItems] = useState<ChecklistItem[]>([]);
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
   const [editing, setEditing] = useState<ChecklistItem | null>(null);
 
-  const loadItems = useCallback(async (planDate: string) => {
-    setLoading(true);
-    const supabase = createClient();
-    if (!supabase) return setLoading(false);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return setLoading(false);
-
-    let query = supabase
-      .from("checklist_items")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("plan_date", planDate)
-      .order("created_at", { ascending: false });
-
-    if (statusFilter === "done") query = query.eq("is_done", true);
-    if (statusFilter === "not_done") query = query.eq("is_done", false);
-
-    const { data } = await query;
-    setItems(data ?? []);
-    setLoading(false);
-  }, [statusFilter]);
-
   useEffect(() => {
+    const stored = localStorage.getItem("checklist");
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    void loadItems(date);
-  }, [date, loadItems]);
+    setAllItems(stored ? JSON.parse(stored) : []);
+  }, []);
 
-  const submitItem = async () => {
+  const saveItems = (items: ChecklistItem[]) => {
+    localStorage.setItem("checklist", JSON.stringify(items));
+    setAllItems(items);
+  };
+
+  const items = useMemo(() => {
+    const byDate = allItems.filter((item) => item.plan_date === date);
+    if (statusFilter === "done") return byDate.filter((item) => item.is_done);
+    if (statusFilter === "not_done") return byDate.filter((item) => !item.is_done);
+    return byDate;
+  }, [allItems, date, statusFilter]);
+
+  const submitItem = () => {
     if (!content.trim()) return;
-    const supabase = createClient();
-    if (!supabase) return;
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
     if (editing) {
-      await supabase
-        .from("checklist_items")
-        .update({ content, priority })
-        .eq("id", editing.id);
+      saveItems(
+        allItems.map((item) =>
+          item.id === editing.id
+            ? { ...item, content, priority, updated_at: new Date().toISOString() }
+            : item,
+        ),
+      );
     } else {
-      await supabase
-        .from("checklist_items")
-        .insert({ user_id: user.id, content, priority, plan_date: date });
+      const now = new Date().toISOString();
+      const item: ChecklistItem = {
+        id: crypto.randomUUID(),
+        user_id: "local-user",
+        content,
+        plan_date: date,
+        is_done: false,
+        priority,
+        created_at: now,
+        updated_at: now,
+      };
+      saveItems([...allItems, item]);
     }
-
     setOpen(false);
     setEditing(null);
     setContent("");
     setPriority("medium");
-    await loadItems(date);
   };
 
-  const toggleDone = async (item: ChecklistItem) => {
-    const supabase = createClient();
-    if (!supabase) return;
-    await supabase
-      .from("checklist_items")
-      .update({ is_done: !item.is_done })
-      .eq("id", item.id);
-    await loadItems(date);
+  const toggleDone = (item: ChecklistItem) => {
+    saveItems(allItems.map((it) => (it.id === item.id ? { ...it, is_done: !it.is_done } : it)));
   };
 
-  const deleteItem = async (id: string) => {
+  const deleteItem = (id: string) => {
     if (!window.confirm("Bạn có chắc muốn xóa mục này?")) return;
-    const supabase = createClient();
-    if (!supabase) return;
-    await supabase.from("checklist_items").delete().eq("id", id);
-    await loadItems(date);
+    saveItems(allItems.filter((item) => item.id !== id));
   };
 
   return (
@@ -107,13 +87,8 @@ export function ChecklistClient() {
         <CardTitle>Việc cần làm</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter((v ?? "all") as FilterStatus)}
-          >
-            <SelectTrigger className="w-[150px]">
-              <SelectValue />
-            </SelectTrigger>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter((v ?? "all") as FilterStatus)}>
+            <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
               <SelectItem value="done">Đã xong</SelectItem>
@@ -122,42 +97,17 @@ export function ChecklistClient() {
           </Select>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-              <span
-                className={buttonVariants()}
-                onClick={() => {
-                  setEditing(null);
-                  setContent("");
-                  setPriority("medium");
-                }}
-              >
-                <Plus className="h-4 w-4" />
-                Thêm việc
+              <span className={buttonVariants()} onClick={() => { setEditing(null); setContent(""); setPriority("medium"); }}>
+                <Plus className="h-4 w-4" />Thêm việc
               </span>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editing ? "Sửa việc" : "Tạo việc mới"}</DialogTitle>
-              </DialogHeader>
+              <DialogHeader><DialogTitle>{editing ? "Sửa việc" : "Tạo việc mới"}</DialogTitle></DialogHeader>
               <div className="space-y-3">
-                <Input
-                  placeholder="Bạn cần làm gì?"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                />
-                <Select
-                  value={priority}
-                  onValueChange={(v) => setPriority((v ?? "medium") as Priority)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {priorities.map((itemPriority) => (
-                      <SelectItem key={itemPriority} value={itemPriority}>
-                        {itemPriority}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                <Input placeholder="Bạn cần làm gì?" value={content} onChange={(e) => setContent(e.target.value)} />
+                <Select value={priority} onValueChange={(v) => setPriority((v ?? "medium") as Priority)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{priorities.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
                 </Select>
                 <Button onClick={submitItem}>{editing ? "Lưu thay đổi" : "Tạo mới"}</Button>
               </div>
@@ -166,34 +116,19 @@ export function ChecklistClient() {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {missingEnv ? (
-          <p className="text-sm text-muted-foreground">
-            Thiếu biến Supabase trong <code>.env.local</code>.
-          </p>
-        ) : null}
-        {loading ? <p className="text-sm text-muted-foreground">Đang tải danh sách...</p> : null}
-        {!loading && !items.length ? <p className="text-sm text-muted-foreground">Chưa có mục nào.</p> : null}
+        {!items.length ? <p className="text-sm text-muted-foreground">Chưa có mục nào.</p> : null}
         {items.map((item) => (
           <div key={item.id} className="flex items-center justify-between rounded-2xl border p-3">
             <div className="flex items-center gap-3">
-              <Checkbox checked={item.is_done} onCheckedChange={() => void toggleDone(item)} />
+              <Checkbox checked={item.is_done} onCheckedChange={() => toggleDone(item)} />
               <p className={item.is_done ? "text-muted-foreground line-through" : ""}>{item.content}</p>
               <Badge variant="secondary">{item.priority}</Badge>
             </div>
             <div className="flex gap-2">
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => {
-                  setEditing(item);
-                  setContent(item.content);
-                  setPriority(item.priority);
-                  setOpen(true);
-                }}
-              >
+              <Button size="icon" variant="outline" onClick={() => { setEditing(item); setContent(item.content); setPriority(item.priority); setOpen(true); }}>
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="destructive" onClick={() => void deleteItem(item.id)}>
+              <Button size="icon" variant="destructive" onClick={() => deleteItem(item.id)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
