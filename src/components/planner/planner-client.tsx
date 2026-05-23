@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Edit, Plus, Trash2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, hasSupabaseEnv } from "@/lib/supabase/client";
 import { DailyPlan, PlanStatus, Priority } from "@/lib/types";
 import { getTodayDate } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,7 @@ const defaultForm = (date = getTodayDate()): PlanForm => ({
 });
 
 export function PlannerClient() {
+  const missingEnv = !hasSupabaseEnv();
   const [date, setDate] = useState(getTodayDate());
   const [plans, setPlans] = useState<DailyPlan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ export function PlannerClient() {
 
   const loadPlans = useCallback(async (planDate: string) => {
     const supabase = createClient();
+    if (!supabase) return setLoading(false);
     setLoading(true);
     const {
       data: { user },
@@ -65,6 +67,7 @@ export function PlannerClient() {
 
   const handleSubmit = async () => {
     const supabase = createClient();
+    if (!supabase) return;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -88,6 +91,7 @@ export function PlannerClient() {
 
   const handleDelete = async (id: string) => {
     const supabase = createClient();
+    if (!supabase) return;
     if (!window.confirm("Delete this plan?")) return;
     await supabase.from("daily_plans").delete().eq("id", id);
     await loadPlans(date);
@@ -95,6 +99,7 @@ export function PlannerClient() {
 
   const updateStatus = async (id: string, status: PlanStatus) => {
     const supabase = createClient();
+    if (!supabase) return;
     await supabase.from("daily_plans").update({ status }).eq("id", id);
     await loadPlans(date);
   };
@@ -191,6 +196,11 @@ export function PlannerClient() {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
+        {missingEnv ? (
+          <p className="text-sm text-muted-foreground">
+            Missing Supabase env in <code>.env.local</code>.
+          </p>
+        ) : null}
         {loading ? <p className="text-sm text-muted-foreground">Loading plans...</p> : null}
         {!loading && !plans.length ? (
           <p className="text-sm text-muted-foreground">No plans for this day.</p>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, hasSupabaseEnv } from "@/lib/supabase/client";
 import { ChecklistItem, Priority } from "@/lib/types";
 import { getTodayDate } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ type FilterStatus = "all" | "done" | "not_done";
 const priorities: Priority[] = ["low", "medium", "high"];
 
 export function ChecklistClient() {
+  const missingEnv = !hasSupabaseEnv();
   const [date, setDate] = useState(getTodayDate());
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,7 @@ export function ChecklistClient() {
   const loadItems = useCallback(async (planDate: string) => {
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) return setLoading(false);
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -57,6 +59,7 @@ export function ChecklistClient() {
   const submitItem = async () => {
     if (!content.trim()) return;
     const supabase = createClient();
+    if (!supabase) return;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -82,6 +85,7 @@ export function ChecklistClient() {
 
   const toggleDone = async (item: ChecklistItem) => {
     const supabase = createClient();
+    if (!supabase) return;
     await supabase
       .from("checklist_items")
       .update({ is_done: !item.is_done })
@@ -92,6 +96,7 @@ export function ChecklistClient() {
   const deleteItem = async (id: string) => {
     if (!window.confirm("Delete this checklist item?")) return;
     const supabase = createClient();
+    if (!supabase) return;
     await supabase.from("checklist_items").delete().eq("id", id);
     await loadItems(date);
   };
@@ -161,6 +166,11 @@ export function ChecklistClient() {
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
+        {missingEnv ? (
+          <p className="text-sm text-muted-foreground">
+            Missing Supabase env in <code>.env.local</code>.
+          </p>
+        ) : null}
         {loading ? <p className="text-sm text-muted-foreground">Loading checklist...</p> : null}
         {!loading && !items.length ? <p className="text-sm text-muted-foreground">No checklist items.</p> : null}
         {items.map((item) => (

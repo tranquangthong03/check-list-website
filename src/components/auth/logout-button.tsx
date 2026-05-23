@@ -12,6 +12,7 @@ export function LogoutButton() {
 
   const handleLogout = async () => {
     const supabase = createClient();
+    if (!supabase) return;
     setLoading(true);
     await supabase.auth.signOut();
     startTransition(() => {

@@ -30,6 +30,11 @@ export function AuthCard({ mode }: AuthCardProps) {
     setError(null);
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) {
+      setError("Missing Supabase env in .env.local");
+      setLoading(false);
+      return;
+    }
 
     if (!email.trim() || !password.trim() || (isRegister && !fullName.trim())) {
       setError("Please fill in all required fields.");

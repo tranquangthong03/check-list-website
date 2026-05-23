@@ -2,7 +2,7 @@
 
 import { useCallback, useDeferredValue, useEffect, useState } from "react";
 import { ExternalLink, Pencil, Plus, Star, Trash2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, hasSupabaseEnv } from "@/lib/supabase/client";
 import { QuickLink } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -31,6 +31,7 @@ function isValidUrl(url: string) {
 }
 
 export function LinksClient() {
+  const missingEnv = !hasSupabaseEnv();
   const [links, setLinks] = useState<QuickLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -43,6 +44,7 @@ export function LinksClient() {
   const loadLinks = useCallback(async () => {
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) return setLoading(false);
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -70,6 +72,7 @@ export function LinksClient() {
       return;
     }
     const supabase = createClient();
+    if (!supabase) return;
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -90,12 +93,14 @@ export function LinksClient() {
   const removeLink = async (id: string) => {
     if (!window.confirm("Delete this link?")) return;
     const supabase = createClient();
+    if (!supabase) return;
     await supabase.from("quick_links").delete().eq("id", id);
     await loadLinks();
   };
 
   const toggleFavorite = async (item: QuickLink) => {
     const supabase = createClient();
+    if (!supabase) return;
     await supabase
       .from("quick_links")
       .update({ is_favorite: !item.is_favorite })
@@ -165,6 +170,11 @@ export function LinksClient() {
         </div>
       </CardHeader>
       <CardContent>
+        {missingEnv ? (
+          <p className="mb-3 text-sm text-muted-foreground">
+            Missing Supabase env in <code>.env.local</code>.
+          </p>
+        ) : null}
         {loading ? <p className="text-sm text-muted-foreground">Loading links...</p> : null}
         {!loading && !filteredLinks.length ? (
           <p className="text-sm text-muted-foreground">No links found.</p>
