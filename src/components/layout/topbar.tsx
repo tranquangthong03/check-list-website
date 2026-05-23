@@ -6,7 +6,6 @@ import { Menu } from "lucide-react";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { navItems } from "@/components/layout/nav-items";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -15,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 export function Topbar() {
   const pathname = usePathname();
@@ -23,9 +23,14 @@ export function Topbar() {
     <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur md:px-6">
       <Sheet>
         <SheetTrigger>
-          <Button variant="outline" size="icon" className="lg:hidden">
+          <span
+            className={cn(
+              buttonVariants({ variant: "outline", size: "icon" }),
+              "lg:hidden",
+            )}
+          >
             <Menu className="h-4 w-4" />
-          </Button>
+          </span>
         </SheetTrigger>
         <SheetContent side="left" className="w-72">
           <SheetHeader>

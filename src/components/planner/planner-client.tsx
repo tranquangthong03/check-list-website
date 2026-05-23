@@ -6,13 +6,14 @@ import { createClient } from "@/lib/supabase/client";
 import { DailyPlan, PlanStatus, Priority } from "@/lib/types";
 import { getTodayDate } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const statusOptions: PlanStatus[] = ["todo", "doing", "done"];
 const priorityOptions: Priority[] = ["low", "medium", "high"];
@@ -106,8 +107,8 @@ export function PlannerClient() {
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-              <Button
-                className="rounded-2xl"
+              <span
+                className={cn(buttonVariants(), "rounded-2xl")}
                 onClick={() => {
                   setEditing(null);
                   setForm(defaultForm(date));
@@ -115,7 +116,7 @@ export function PlannerClient() {
               >
                 <Plus className="h-4 w-4" />
                 Add plan
-              </Button>
+              </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

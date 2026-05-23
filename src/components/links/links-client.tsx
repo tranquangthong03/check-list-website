@@ -5,7 +5,7 @@ import { ExternalLink, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { QuickLink } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -120,7 +120,8 @@ export function LinksClient() {
           />
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-              <Button
+              <span
+                className={buttonVariants()}
                 onClick={() => {
                   setEditing(null);
                   setError(null);
@@ -129,7 +130,7 @@ export function LinksClient() {
               >
                 <Plus className="h-4 w-4" />
                 Add link
-              </Button>
+              </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

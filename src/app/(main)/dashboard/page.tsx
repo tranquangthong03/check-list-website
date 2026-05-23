@@ -5,6 +5,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 export default async function DashboardPage() {
+  const hasSupabaseConfig =
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!hasSupabaseConfig) {
+    return (
+      <Card className="rounded-3xl">
+        <CardContent className="p-6 text-sm text-muted-foreground">
+          Supabase env is missing. Please set
+          <code className="mx-1">NEXT_PUBLIC_SUPABASE_URL</code>
+          and
+          <code className="mx-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
+          in <code>.env.local</code>.
+        </CardContent>
+      </Card>
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },

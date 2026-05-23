@@ -4,6 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function SettingsPage() {
+  const hasSupabaseConfig =
+    !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!hasSupabaseConfig) {
+    return (
+      <Card className="rounded-3xl">
+        <CardContent className="p-6 text-sm text-muted-foreground">
+          Supabase env is missing. Please configure <code>.env.local</code>.
+        </CardContent>
+      </Card>
+    );
+  }
+
   const supabase = await createClient();
   const {
     data: { user },

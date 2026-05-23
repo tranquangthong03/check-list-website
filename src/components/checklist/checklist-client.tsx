@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { ChecklistItem, Priority } from "@/lib/types";
 import { getTodayDate } from "@/lib/date";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -117,7 +117,8 @@ export function ChecklistClient() {
           </Select>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
-              <Button
+              <span
+                className={buttonVariants()}
                 onClick={() => {
                   setEditing(null);
                   setContent("");
@@ -126,7 +127,7 @@ export function ChecklistClient() {
               >
                 <Plus className="h-4 w-4" />
                 Add item
-              </Button>
+              </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
