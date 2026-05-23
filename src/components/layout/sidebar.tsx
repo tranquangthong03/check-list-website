@@ -16,7 +16,7 @@ export function Sidebar() {
           <ClipboardList className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Personal App</p>
+          <p className="text-sm text-muted-foreground">Ứng dụng cá nhân</p>
           <p className="text-lg font-semibold">Check List Website</p>
         </div>
       </Link>

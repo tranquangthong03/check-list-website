@@ -12,7 +12,7 @@ export default async function SettingsPage() {
     return (
       <Card className="rounded-3xl">
         <CardContent className="p-6 text-sm text-muted-foreground">
-          Supabase env is missing. Please configure <code>.env.local</code>.
+          Thiếu biến Supabase. Vui lòng cấu hình <code>.env.local</code>.
         </CardContent>
       </Card>
     );
@@ -27,7 +27,7 @@ export default async function SettingsPage() {
     return (
       <Card className="rounded-3xl">
         <CardContent className="p-6 text-sm text-muted-foreground">
-          Please login to manage settings.
+          Vui lòng đăng nhập để quản lý cài đặt.
         </CardContent>
       </Card>
     );
@@ -37,39 +37,39 @@ export default async function SettingsPage() {
     <div className="grid gap-4 lg:grid-cols-2">
       <Card className="rounded-3xl">
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
+          <CardTitle>Thông tin tài khoản</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
             <span className="font-medium">Email:</span> {user.email}
           </p>
           <p>
-            <span className="font-medium">Full name:</span>{" "}
-            {user.user_metadata.full_name ?? "Not set"}
+            <span className="font-medium">Họ và tên:</span>{" "}
+            {user.user_metadata.full_name ?? "Chưa cập nhật"}
           </p>
           <p>
-            <span className="font-medium">User ID:</span> {user.id}
+            <span className="font-medium">Mã người dùng:</span> {user.id}
           </p>
         </CardContent>
       </Card>
       <Card className="rounded-3xl">
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
+          <CardTitle>Tùy chọn</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between rounded-2xl border p-4">
             <div>
-              <p className="font-medium">Theme</p>
+              <p className="font-medium">Giao diện</p>
               <p className="text-sm text-muted-foreground">
-                Switch between light and dark mode.
+                Chuyển giữa chế độ sáng và tối.
               </p>
             </div>
             <ThemeToggle />
           </div>
           <div className="flex items-center justify-between rounded-2xl border p-4">
             <div>
-              <p className="font-medium">Session</p>
-              <p className="text-sm text-muted-foreground">Sign out from this device.</p>
+              <p className="font-medium">Phiên đăng nhập</p>
+              <p className="text-sm text-muted-foreground">Đăng xuất khỏi thiết bị này.</p>
             </div>
             <LogoutButton />
           </div>

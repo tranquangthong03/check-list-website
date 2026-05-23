@@ -92,7 +92,7 @@ export function PlannerClient() {
   const handleDelete = async (id: string) => {
     const supabase = createClient();
     if (!supabase) return;
-    if (!window.confirm("Delete this plan?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa kế hoạch này?")) return;
     await supabase.from("daily_plans").delete().eq("id", id);
     await loadPlans(date);
   };
@@ -107,7 +107,7 @@ export function PlannerClient() {
   return (
     <Card className="rounded-3xl">
       <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <CardTitle>Daily Planner</CardTitle>
+        <CardTitle>Kế hoạch ngày</CardTitle>
         <div className="flex gap-2">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <Dialog open={open} onOpenChange={setOpen}>
@@ -120,17 +120,17 @@ export function PlannerClient() {
                 }}
               >
                 <Plus className="h-4 w-4" />
-                Add plan
+                Thêm kế hoạch
               </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{editing ? "Edit plan" : "New plan"}</DialogTitle>
+                <DialogTitle>{editing ? "Sửa kế hoạch" : "Tạo kế hoạch mới"}</DialogTitle>
               </DialogHeader>
               <div className="grid gap-3">
-                <Label>Title</Label>
+                <Label>Tiêu đề</Label>
                 <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-                <Label>Description</Label>
+                <Label>Mô tả</Label>
                 <Textarea
                   value={form.description ?? ""}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -155,7 +155,7 @@ export function PlannerClient() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Status" />
+                      <SelectValue placeholder="Trạng thái" />
                     </SelectTrigger>
                     <SelectContent>
                       {statusOptions.map((status) => (
@@ -172,7 +172,7 @@ export function PlannerClient() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Priority" />
+                      <SelectValue placeholder="Ưu tiên" />
                     </SelectTrigger>
                     <SelectContent>
                       {priorityOptions.map((priority) => (
@@ -184,12 +184,12 @@ export function PlannerClient() {
                   </Select>
                 </div>
                 <Input
-                  placeholder="Category"
+                  placeholder="Danh mục"
                   value={form.category ?? ""}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                 />
                 <Input type="color" value={form.color ?? "#22c55e"} onChange={(e) => setForm({ ...form, color: e.target.value })} />
-                <Button onClick={handleSubmit}>{editing ? "Save changes" : "Create plan"}</Button>
+                <Button onClick={handleSubmit}>{editing ? "Lưu thay đổi" : "Tạo kế hoạch"}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -198,12 +198,12 @@ export function PlannerClient() {
       <CardContent className="space-y-3">
         {missingEnv ? (
           <p className="text-sm text-muted-foreground">
-            Missing Supabase env in <code>.env.local</code>.
+            Thiếu biến Supabase trong <code>.env.local</code>.
           </p>
         ) : null}
-        {loading ? <p className="text-sm text-muted-foreground">Loading plans...</p> : null}
+        {loading ? <p className="text-sm text-muted-foreground">Đang tải kế hoạch...</p> : null}
         {!loading && !plans.length ? (
-          <p className="text-sm text-muted-foreground">No plans for this day.</p>
+          <p className="text-sm text-muted-foreground">Ngày này chưa có kế hoạch.</p>
         ) : null}
         {plans.map((plan) => (
           <div

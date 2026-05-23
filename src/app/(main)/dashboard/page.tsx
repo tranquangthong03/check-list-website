@@ -13,11 +13,12 @@ export default async function DashboardPage() {
     return (
       <Card className="rounded-3xl">
         <CardContent className="p-6 text-sm text-muted-foreground">
-          Supabase env is missing. Please set
+          Thiếu biến Supabase. Vui lòng thiết lập
+          
           <code className="mx-1">NEXT_PUBLIC_SUPABASE_URL</code>
-          and
+          và
           <code className="mx-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
-          in <code>.env.local</code>.
+          trong <code>.env.local</code>.
         </CardContent>
       </Card>
     );
@@ -32,7 +33,7 @@ export default async function DashboardPage() {
     return (
       <Card className="rounded-3xl">
         <CardContent className="p-6 text-sm text-muted-foreground">
-          Please login to view dashboard.
+          Vui lòng đăng nhập để xem trang tổng quan.
         </CardContent>
       </Card>
     );
@@ -99,16 +100,16 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <section className="space-y-1">
-        <h1 className="text-3xl font-bold">Hi, {user.user_metadata.full_name ?? "there"}.</h1>
+        <h1 className="text-3xl font-bold">Xin chào, {user.user_metadata.full_name ?? "bạn"}.</h1>
         <p className="text-muted-foreground">{formatDateLabel(new Date())}</p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          { icon: ListTodo, title: "Today Progress", value: `${progress}%` },
-          { icon: ClipboardList, title: "Total Plans", value: String(planCount ?? 0) },
-          { icon: CheckCheck, title: "Completed Checklist", value: String(doneChecklist ?? 0) },
-          { icon: Link2, title: "Favorite Links", value: String(favoriteLinks?.length ?? 0) },
+          { icon: ListTodo, title: "Tiến độ hôm nay", value: `${progress}%` },
+          { icon: ClipboardList, title: "Tổng kế hoạch", value: String(planCount ?? 0) },
+          { icon: CheckCheck, title: "Việc đã hoàn thành", value: String(doneChecklist ?? 0) },
+          { icon: Link2, title: "Link yêu thích", value: String(favoriteLinks?.length ?? 0) },
         ].map(({ icon: Icon, title, value }) => (
           <Card key={title} className="rounded-3xl">
             <CardContent className="p-5">
@@ -117,7 +118,7 @@ export default async function DashboardPage() {
                 <Icon className="h-4 w-4 text-primary" />
               </div>
               <p className="text-2xl font-semibold">{value}</p>
-              {title === "Today Progress" ? <Progress className="mt-3 h-2" value={progress} /> : null}
+              {title === "Tiến độ hôm nay" ? <Progress className="mt-3 h-2" value={progress} /> : null}
             </CardContent>
           </Card>
         ))}
@@ -126,7 +127,7 @@ export default async function DashboardPage() {
       <section className="grid gap-4 xl:grid-cols-2">
         <Card className="rounded-3xl">
           <CardHeader>
-            <CardTitle>Today plans</CardTitle>
+            <CardTitle>Kế hoạch hôm nay</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             {todayPlans?.length ? (
@@ -139,14 +140,14 @@ export default async function DashboardPage() {
                 </div>
               ))
             ) : (
-              <p className="text-muted-foreground">No plan for today.</p>
+              <p className="text-muted-foreground">Hôm nay chưa có kế hoạch.</p>
             )}
           </CardContent>
         </Card>
 
         <Card className="rounded-3xl">
           <CardHeader>
-            <CardTitle>Favorite quick links</CardTitle>
+            <CardTitle>Liên kết yêu thích</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             {favoriteLinks?.length ? (
@@ -159,11 +160,11 @@ export default async function DashboardPage() {
                   className="block rounded-2xl border p-3 hover:bg-accent"
                 >
                   <p className="font-medium">{link.name}</p>
-                  <p className="text-muted-foreground">{link.category || "General"}</p>
+                  <p className="text-muted-foreground">{link.category || "Chung"}</p>
                 </a>
               ))
             ) : (
-              <p className="text-muted-foreground">No favorite links yet.</p>
+              <p className="text-muted-foreground">Chưa có liên kết yêu thích.</p>
             )}
           </CardContent>
         </Card>

@@ -16,7 +16,7 @@ const defaultForm: LinkForm = {
   name: "",
   url: "",
   icon: "🌐",
-  category: "General",
+  category: "Chung",
   is_favorite: false,
   sort_order: 0,
 };
@@ -68,7 +68,7 @@ export function LinksClient() {
   const submitLink = async () => {
     setError(null);
     if (!form.name.trim() || !isValidUrl(form.url)) {
-      setError("Please provide a valid name and URL (http/https).");
+      setError("Vui lòng nhập tên và URL hợp lệ (http/https).");
       return;
     }
     const supabase = createClient();
@@ -91,7 +91,7 @@ export function LinksClient() {
   };
 
   const removeLink = async (id: string) => {
-    if (!window.confirm("Delete this link?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa liên kết này?")) return;
     const supabase = createClient();
     if (!supabase) return;
     await supabase.from("quick_links").delete().eq("id", id);
@@ -115,12 +115,12 @@ export function LinksClient() {
   return (
     <Card className="rounded-3xl">
       <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <CardTitle>Quick Links</CardTitle>
+        <CardTitle>Liên kết nhanh</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search link..."
+            placeholder="Tìm liên kết..."
             className="w-[200px]"
           />
           <Dialog open={open} onOpenChange={setOpen}>
@@ -134,16 +134,16 @@ export function LinksClient() {
                 }}
               >
                 <Plus className="h-4 w-4" />
-                Add link
+                Thêm liên kết
               </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{editing ? "Edit link" : "Create link"}</DialogTitle>
+                <DialogTitle>{editing ? "Sửa liên kết" : "Tạo liên kết mới"}</DialogTitle>
               </DialogHeader>
               <div className="space-y-3">
                 <Input
-                  placeholder="Name"
+                  placeholder="Tên"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
@@ -153,17 +153,17 @@ export function LinksClient() {
                   onChange={(e) => setForm({ ...form, url: e.target.value })}
                 />
                 <Input
-                  placeholder="Icon or emoji"
+                  placeholder="Icon hoặc emoji"
                   value={form.icon ?? ""}
                   onChange={(e) => setForm({ ...form, icon: e.target.value })}
                 />
                 <Input
-                  placeholder="Category"
+                  placeholder="Danh mục"
                   value={form.category ?? ""}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                 />
                 {error ? <p className="text-sm text-red-500">{error}</p> : null}
-                <Button onClick={submitLink}>{editing ? "Save changes" : "Create link"}</Button>
+                <Button onClick={submitLink}>{editing ? "Lưu thay đổi" : "Tạo liên kết"}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -172,12 +172,12 @@ export function LinksClient() {
       <CardContent>
         {missingEnv ? (
           <p className="mb-3 text-sm text-muted-foreground">
-            Missing Supabase env in <code>.env.local</code>.
+            Thiếu biến Supabase trong <code>.env.local</code>.
           </p>
         ) : null}
-        {loading ? <p className="text-sm text-muted-foreground">Loading links...</p> : null}
+        {loading ? <p className="text-sm text-muted-foreground">Đang tải liên kết...</p> : null}
         {!loading && !filteredLinks.length ? (
-          <p className="text-sm text-muted-foreground">No links found.</p>
+          <p className="text-sm text-muted-foreground">Không tìm thấy liên kết.</p>
         ) : null}
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {filteredLinks.map((item) => (
@@ -193,7 +193,7 @@ export function LinksClient() {
               </div>
               <p className="font-semibold">{item.name}</p>
               <Badge variant="secondary" className="my-2">
-                {item.category || "General"}
+                {item.category || "Chung"}
               </Badge>
               <p className="mb-4 truncate text-sm text-muted-foreground">{item.url}</p>
               <div className="flex gap-2">
@@ -202,7 +202,7 @@ export function LinksClient() {
                   onClick={() => window.open(item.url, "_blank", "noopener,noreferrer")}
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Open
+                  Mở
                 </Button>
                 <Button
                   size="icon"

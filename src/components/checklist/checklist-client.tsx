@@ -94,7 +94,7 @@ export function ChecklistClient() {
   };
 
   const deleteItem = async (id: string) => {
-    if (!window.confirm("Delete this checklist item?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa mục này?")) return;
     const supabase = createClient();
     if (!supabase) return;
     await supabase.from("checklist_items").delete().eq("id", id);
@@ -104,7 +104,7 @@ export function ChecklistClient() {
   return (
     <Card className="rounded-3xl">
       <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <CardTitle>Checklist</CardTitle>
+        <CardTitle>Việc cần làm</CardTitle>
         <div className="flex flex-wrap gap-2">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           <Select
@@ -115,9 +115,9 @@ export function ChecklistClient() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="done">Done</SelectItem>
-              <SelectItem value="not_done">Not done</SelectItem>
+              <SelectItem value="all">Tất cả</SelectItem>
+              <SelectItem value="done">Đã xong</SelectItem>
+              <SelectItem value="not_done">Chưa xong</SelectItem>
             </SelectContent>
           </Select>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -131,16 +131,16 @@ export function ChecklistClient() {
                 }}
               >
                 <Plus className="h-4 w-4" />
-                Add item
+                Thêm việc
               </span>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{editing ? "Edit item" : "Create item"}</DialogTitle>
+                <DialogTitle>{editing ? "Sửa việc" : "Tạo việc mới"}</DialogTitle>
               </DialogHeader>
               <div className="space-y-3">
                 <Input
-                  placeholder="What do you need to do?"
+                  placeholder="Bạn cần làm gì?"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
@@ -159,7 +159,7 @@ export function ChecklistClient() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={submitItem}>{editing ? "Save changes" : "Create"}</Button>
+                <Button onClick={submitItem}>{editing ? "Lưu thay đổi" : "Tạo mới"}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -168,11 +168,11 @@ export function ChecklistClient() {
       <CardContent className="space-y-3">
         {missingEnv ? (
           <p className="text-sm text-muted-foreground">
-            Missing Supabase env in <code>.env.local</code>.
+            Thiếu biến Supabase trong <code>.env.local</code>.
           </p>
         ) : null}
-        {loading ? <p className="text-sm text-muted-foreground">Loading checklist...</p> : null}
-        {!loading && !items.length ? <p className="text-sm text-muted-foreground">No checklist items.</p> : null}
+        {loading ? <p className="text-sm text-muted-foreground">Đang tải danh sách...</p> : null}
+        {!loading && !items.length ? <p className="text-sm text-muted-foreground">Chưa có mục nào.</p> : null}
         {items.map((item) => (
           <div key={item.id} className="flex items-center justify-between rounded-2xl border p-3">
             <div className="flex items-center gap-3">

@@ -24,7 +24,7 @@ export function LogoutButton() {
   return (
     <Button variant="outline" onClick={handleLogout} disabled={loading}>
       <LogOut className="h-4 w-4" />
-      Logout
+      Đăng xuất
     </Button>
   );
 }

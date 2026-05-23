@@ -31,13 +31,13 @@ export function AuthCard({ mode }: AuthCardProps) {
     setLoading(true);
     const supabase = createClient();
     if (!supabase) {
-      setError("Missing Supabase env in .env.local");
+      setError("Thiếu biến Supabase trong .env.local");
       setLoading(false);
       return;
     }
 
     if (!email.trim() || !password.trim() || (isRegister && !fullName.trim())) {
-      setError("Please fill in all required fields.");
+      setError("Vui lòng điền đầy đủ các trường bắt buộc.");
       setLoading(false);
       return;
     }
@@ -68,19 +68,19 @@ export function AuthCard({ mode }: AuthCardProps) {
     <Card className="w-full rounded-3xl border-0 bg-card/90 shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl">
-          {isRegister ? "Create account" : "Welcome back"}
+          {isRegister ? "Tạo tài khoản" : "Chào mừng quay lại"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full name</Label>
+              <Label htmlFor="fullName">Họ và tên</Label>
               <Input
                 id="fullName"
                 value={fullName}
                 onChange={(event) => setFullName(event.target.value)}
-                placeholder="Your name"
+                placeholder="Nhập họ và tên"
               />
             </div>
           )}
@@ -95,31 +95,31 @@ export function AuthCard({ mode }: AuthCardProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Mật khẩu</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="********"
+              placeholder="Nhập mật khẩu"
             />
           </div>
           {error ? <p className="text-sm text-red-500">{error}</p> : null}
           <Button type="submit" className="w-full rounded-2xl" disabled={loading}>
             {loading
-              ? "Please wait..."
+              ? "Đang xử lý..."
               : isRegister
-                ? "Create account"
-                : "Sign in"}
+                ? "Tạo tài khoản"
+                : "Đăng nhập"}
           </Button>
         </form>
         <p className="mt-4 text-sm text-muted-foreground">
-          {isRegister ? "Already have an account?" : "Don’t have an account?"}{" "}
+          {isRegister ? "Đã có tài khoản?" : "Chưa có tài khoản?"}{" "}
           <Link
             href={isRegister ? "/auth/login" : "/auth/register"}
             className="font-semibold text-primary"
           >
-            {isRegister ? "Sign in" : "Create one"}
+            {isRegister ? "Đăng nhập" : "Đăng ký ngay"}
           </Link>
         </p>
       </CardContent>

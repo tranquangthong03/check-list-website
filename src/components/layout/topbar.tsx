@@ -58,7 +58,7 @@ export function Topbar() {
           </nav>
         </SheetContent>
       </Sheet>
-      <p className="text-sm font-medium text-muted-foreground">Personal productivity space</p>
+      <p className="text-sm font-medium text-muted-foreground">Không gian quản lý công việc cá nhân</p>
       <div className="flex items-center gap-2">
         <ThemeToggle />
         <LogoutButton />

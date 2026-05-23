@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 
 export const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/planner", label: "Daily Planner", icon: CalendarRange },
-  { href: "/checklist", label: "Checklist", icon: CheckSquare },
-  { href: "/links", label: "Quick Links", icon: Link2 },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", label: "Tổng quan", icon: Home },
+  { href: "/planner", label: "Kế hoạch ngày", icon: CalendarRange },
+  { href: "/checklist", label: "Việc cần làm", icon: CheckSquare },
+  { href: "/links", label: "Liên kết nhanh", icon: Link2 },
+  { href: "/settings", label: "Cài đặt", icon: Settings },
 ];
